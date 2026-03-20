@@ -16,7 +16,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img
           src={product.image}
           alt={product.name}
-          className="h-72 w-full object-cover object-center group-hover:opacity-75 transition-opacity duration-300 grayscale hover:grayscale-0"
+          className="h-72 w-full object-cover object-center group-hover:opacity-75 transition-opacity duration-300"
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300" />

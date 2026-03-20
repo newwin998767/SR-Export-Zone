@@ -18,7 +18,7 @@ export const About = () => {
             <img
               src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=2071"
               alt="Our Workshop"
-              className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              className="w-full h-full object-cover transition-all duration-700"
               referrerPolicy="no-referrer"
             />
           </div>

@@ -54,7 +54,7 @@ export const CartDrawer = () => {
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-center object-cover grayscale hover:grayscale-0 transition-all"
+                            className="w-full h-full object-center object-cover transition-all"
                             referrerPolicy="no-referrer"
                           />
                         </div>
