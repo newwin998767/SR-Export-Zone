@@ -4,7 +4,7 @@ export const products: Product[] = [
   {
     id: '1',
     name: 'Essential White Tee',
-    price: 35,
+    price: 3500,
     image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800',
     category: 'T-Shirts',
     description: 'A premium cotton white t-shirt for everyday wear. Clean lines and a perfect fit.'
@@ -12,7 +12,7 @@ export const products: Product[] = [
   {
     id: '2',
     name: 'Classic Black Hoodie',
-    price: 85,
+    price: 8500,
     image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800',
     category: 'Outerwear',
     description: 'Heavyweight black hoodie with a minimalist design. Perfect for layering.'
@@ -20,7 +20,7 @@ export const products: Product[] = [
   {
     id: '3',
     name: 'Tailored Trousers',
-    price: 120,
+    price: 12000,
     image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=800',
     category: 'Bottoms',
     description: 'Sharp, black tailored trousers that transition seamlessly from day to night.'
@@ -28,7 +28,7 @@ export const products: Product[] = [
   {
     id: '4',
     name: 'Monochrome Sneakers',
-    price: 150,
+    price: 15000,
     image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800',
     category: 'Footwear',
     description: 'Sleek white sneakers with subtle black detailing. Comfort meets style.'
@@ -36,7 +36,7 @@ export const products: Product[] = [
   {
     id: '5',
     name: 'Structured Blazer',
-    price: 210,
+    price: 21000,
     image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800',
     category: 'Outerwear',
     description: 'A sharp black blazer with structured shoulders for a powerful silhouette.'
@@ -44,7 +44,7 @@ export const products: Product[] = [
   {
     id: '6',
     name: 'Minimalist Watch',
-    price: 180,
+    price: 18000,
     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800',
     category: 'Accessories',
     description: 'Matte black dial with a premium leather strap. Timekeeping refined.'
@@ -52,7 +52,7 @@ export const products: Product[] = [
   {
     id: '7',
     name: 'Oversized Button-Down',
-    price: 65,
+    price: 6500,
     image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800',
     category: 'Shirts',
     description: 'Crisp white oversized shirt. Effortlessly chic and versatile.'
@@ -60,7 +60,7 @@ export const products: Product[] = [
   {
     id: '8',
     name: 'Leather Crossbody Bag',
-    price: 145,
+    price: 14500,
     image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=800',
     category: 'Accessories',
     description: 'Compact black leather bag with silver hardware.'

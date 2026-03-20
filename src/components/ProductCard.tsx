@@ -30,7 +30,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <h3 className="text-lg font-bold text-gray-900 mb-1 truncate">{product.name}</h3>
         <p className="text-sm text-gray-500 mb-4 line-clamp-2">{product.description}</p>
         <div className="flex items-center justify-between">
-          <p className="text-xl font-extrabold text-black">${product.price.toFixed(2)}</p>
+          <p className="text-xl font-extrabold text-black">৳{product.price.toFixed(2)}</p>
           <button
             onClick={() => addToCart(product)}
             className="inline-flex items-center justify-center p-2 border border-transparent rounded-full shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors"

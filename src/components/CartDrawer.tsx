@@ -65,7 +65,7 @@ export const CartDrawer = () => {
                               <h3 className="truncate max-w-[180px]">
                                 {item.name}
                               </h3>
-                              <p className="ml-4">${(item.price * item.quantity).toFixed(2)}</p>
+                              <p className="ml-4">৳{(item.price * item.quantity).toFixed(2)}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500 uppercase tracking-wider">{item.category}</p>
                           </div>
@@ -108,7 +108,7 @@ export const CartDrawer = () => {
               <div className="border-t border-gray-200 px-6 py-6 bg-gray-50">
                 <div className="flex justify-between text-lg font-extrabold text-gray-900 mb-6">
                   <p className="uppercase tracking-widest">Subtotal</p>
-                  <p>${total.toFixed(2)}</p>
+                  <p>৳{total.toFixed(2)}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500 mb-6">Shipping and taxes calculated at checkout.</p>
                 <div className="mt-6">
