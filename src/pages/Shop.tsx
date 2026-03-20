@@ -40,8 +40,8 @@ export const Shop = () => {
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-2 text-xs font-bold uppercase tracking-widest border transition-all duration-300 ${
                     selectedCategory === category
-                      ? 'bg-black text-white border-black'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-black hover:text-black'
+                      ? 'bg-red-600 text-white border-red-600'
+                      : 'bg-white text-gray-600 border-gray-300 hover:border-red-600 hover:text-red-600'
                   }`}
                 >
                   {category}

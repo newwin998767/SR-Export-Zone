@@ -44,7 +44,7 @@ export const About = () => {
           </p>
           <a
             href="/shop"
-            className="inline-flex items-center justify-center px-10 py-5 border-2 border-white text-lg font-bold uppercase tracking-widest text-black bg-white hover:bg-transparent hover:text-white transition-all duration-300"
+            className="inline-flex items-center justify-center px-10 py-5 border-2 border-red-600 text-lg font-bold uppercase tracking-widest text-white bg-red-600 hover:bg-transparent hover:text-red-600 transition-all duration-300"
           >
             Shop Now
           </a>

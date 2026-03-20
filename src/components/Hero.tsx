@@ -27,14 +27,14 @@ export const Hero = () => {
         <div className="flex justify-center gap-4 flex-col sm:flex-row">
           <Link
             to="/shop"
-            className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-bold uppercase tracking-widest text-black bg-white hover:bg-transparent hover:text-white transition-all duration-300"
+            className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-bold uppercase tracking-widest text-black bg-white hover:bg-red-600 hover:border-red-600 hover:text-white transition-all duration-300"
           >
             Shop Collection
             <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
           </Link>
           <Link
             to="/about"
-            className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-300"
+            className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-bold uppercase tracking-widest text-white hover:bg-red-600 hover:border-red-600 hover:text-white transition-all duration-300"
           >
             Our Story
           </Link>

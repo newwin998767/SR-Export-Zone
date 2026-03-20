@@ -33,13 +33,13 @@ export const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-sm font-medium text-black hover:text-gray-500 uppercase tracking-widest transition-colors">
+            <Link to="/" className="text-sm font-medium text-black hover:text-red-600 uppercase tracking-widest transition-colors">
               Home
             </Link>
-            <Link to="/shop" className="text-sm font-medium text-black hover:text-gray-500 uppercase tracking-widest transition-colors">
+            <Link to="/shop" className="text-sm font-medium text-black hover:text-red-600 uppercase tracking-widest transition-colors">
               Shop
             </Link>
-            <Link to="/about" className="text-sm font-medium text-black hover:text-gray-500 uppercase tracking-widest transition-colors">
+            <Link to="/about" className="text-sm font-medium text-black hover:text-red-600 uppercase tracking-widest transition-colors">
               About
             </Link>
           </div>
@@ -48,11 +48,11 @@ export const Navbar = () => {
           <div className="flex items-center">
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-black hover:text-gray-600 transition-colors"
+              className="relative p-2 text-black hover:text-red-600 transition-colors"
             >
               <ShoppingBag size={24} />
               {itemCount > 0 && (
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-black rounded-full">
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
                   {itemCount}
                 </span>
               )}

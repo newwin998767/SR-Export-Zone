@@ -40,7 +40,7 @@ export const CartDrawer = () => {
                   <p className="text-gray-500 max-w-xs">Looks like you haven't added anything to your bag yet.</p>
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="mt-8 px-8 py-3 border-2 border-black text-sm font-bold uppercase tracking-widest text-black hover:bg-black hover:text-white transition-colors"
+                    className="mt-8 px-8 py-3 border-2 border-red-600 text-sm font-bold uppercase tracking-widest text-red-600 hover:bg-red-600 hover:text-white transition-colors"
                   >
                     Start Shopping
                   </button>
@@ -113,7 +113,7 @@ export const CartDrawer = () => {
                 <p className="mt-0.5 text-sm text-gray-500 mb-6">Shipping and taxes calculated at checkout.</p>
                 <div className="mt-6">
                   <button
-                    className="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black uppercase tracking-widest transition-colors"
+                    className="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 uppercase tracking-widest transition-colors"
                   >
                     Checkout
                   </button>
@@ -123,7 +123,7 @@ export const CartDrawer = () => {
                     or{' '}
                     <button
                       type="button"
-                      className="text-black font-bold hover:text-gray-700 uppercase tracking-wider"
+                      className="text-red-600 font-bold hover:text-red-700 uppercase tracking-wider"
                       onClick={() => setIsCartOpen(false)}
                     >
                       Continue Shopping<span aria-hidden="true"> &rarr;</span>

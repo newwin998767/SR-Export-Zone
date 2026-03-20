@@ -26,7 +26,7 @@ export const Home = () => {
             </div>
             <Link
               to="/shop"
-              className="hidden sm:flex items-center text-sm font-bold text-black hover:text-gray-600 uppercase tracking-widest transition-colors"
+              className="hidden sm:flex items-center text-sm font-bold text-black hover:text-red-600 uppercase tracking-widest transition-colors"
             >
               View All <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
@@ -41,7 +41,7 @@ export const Home = () => {
           <div className="mt-12 sm:hidden flex justify-center">
              <Link
               to="/shop"
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-black text-sm font-bold uppercase tracking-widest text-black hover:bg-black hover:text-white transition-all duration-300 w-full"
+              className="inline-flex items-center justify-center px-8 py-4 border-2 border-red-600 text-sm font-bold uppercase tracking-widest text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 w-full"
             >
               View All Collection
             </Link>
@@ -62,7 +62,7 @@ export const Home = () => {
               </p>
               <Link
                 to="/about"
-                className="inline-flex items-center justify-center px-8 py-4 border-2 border-black text-sm font-bold uppercase tracking-widest text-white bg-black hover:bg-transparent hover:text-black transition-all duration-300"
+                className="inline-flex items-center justify-center px-8 py-4 border-2 border-red-600 text-sm font-bold uppercase tracking-widest text-white bg-red-600 hover:bg-transparent hover:text-red-600 transition-all duration-300"
               >
                 Read Our Story
               </Link>
