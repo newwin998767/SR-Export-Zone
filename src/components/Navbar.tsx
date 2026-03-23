@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X, User as UserIcon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
+import { LoginModal } from './LoginModal';
 
 export const Navbar = () => {
   const { items, setIsCartOpen } = useCart();
+  const { user, profile } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -44,8 +48,23 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Cart Icon */}
-          <div className="flex items-center">
+          {/* Cart & User Icons */}
+          <div className="flex items-center space-x-2">
+            {user ? (
+              <Link
+                to={profile?.role === 'admin' ? '/admin' : '/profile'}
+                className="relative p-2 text-black hover:text-red-600 transition-colors"
+              >
+                <UserIcon size={24} />
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsLoginModalOpen(true)}
+                className="relative p-2 text-black hover:text-red-600 transition-colors"
+              >
+                <UserIcon size={24} />
+              </button>
+            )}
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 text-black hover:text-red-600 transition-colors"
@@ -86,9 +105,29 @@ export const Navbar = () => {
             >
               About
             </Link>
+            {user ? (
+              <Link
+                to={profile?.role === 'admin' ? '/admin' : '/profile'}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-3 py-2 text-base font-medium text-black hover:bg-gray-50 uppercase tracking-widest"
+              >
+                {profile?.role === 'admin' ? 'Admin Panel' : 'Profile'}
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsLoginModalOpen(true);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-black hover:bg-gray-50 uppercase tracking-widest"
+              >
+                Login
+              </button>
+            )}
           </div>
         </div>
       )}
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </nav>
   );
 };

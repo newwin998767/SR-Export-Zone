@@ -1,17 +1,47 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ProductCard } from '../components/ProductCard';
-import { products } from '../data';
+import { products as localProducts } from '../data';
 import { Filter } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 export const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'products'));
+        const fetchedProducts = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // If Firestore is empty, use local data
+        if (fetchedProducts.length === 0) {
+          setProducts(localProducts);
+        } else {
+          setProducts(fetchedProducts);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts(localProducts); // Fallback to local data on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
   const filteredProducts = useMemo(() => {
     if (selectedCategory === 'All') return products;
     return products.filter(p => p.category === selectedCategory);
-  }, [selectedCategory]);
+  }, [selectedCategory, products]);
 
   return (
     <div className="pt-24 pb-24 min-h-screen bg-white">
@@ -52,7 +82,11 @@ export const Shop = () => {
         </div>
 
         {/* Product Grid */}
-        {filteredProducts.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+          </div>
+        ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />

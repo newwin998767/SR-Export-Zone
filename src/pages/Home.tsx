@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Hero } from '../components/Hero';
 import { ProductCard } from '../components/ProductCard';
-import { products } from '../data';
+import { products as localProducts } from '../data';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, getDocs, limit, query } from 'firebase/firestore';
 
 export const Home = () => {
-  const featuredProducts = products.slice(0, 4);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const q = query(collection(db, 'products'), limit(4));
+        const querySnapshot = await getDocs(q);
+        const fetchedProducts = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setFeaturedProducts(fetchedProducts.length > 0 ? fetchedProducts : localProducts.slice(0, 4));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setFeaturedProducts(localProducts.slice(0, 4));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -33,9 +56,15 @@ export const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              <div className="col-span-full flex justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-600"></div>
+              </div>
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
           
           <div className="mt-12 sm:hidden flex justify-center">

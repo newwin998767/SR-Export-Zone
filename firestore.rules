@@ -1,0 +1,160 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required, immutable)
+    //   - email: string (required, immutable)
+    //   - role: string (required, immutable for non-admin)
+    //   - displayName: string (optional)
+    //   - photoURL: string (optional)
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // Collection: products
+    // Document ID: {productId}
+    // Fields:
+    //   - id: string (required, immutable)
+    //   - name: string (required, size < 100)
+    //   - description: string (required, size < 2000)
+    //   - price: number (required, > 0)
+    //   - image: string (required, size < 2000000)
+    //   - category: string (required, size < 50)
+    //   - inventory: number (required, >= 0)
+    //   - createdAt: timestamp (required, immutable)
+    //   - updatedAt: timestamp (optional)
+    //
+    // Collection: orders
+    // Document ID: {orderId}
+    // Fields:
+    //   - id: string (required, immutable)
+    //   - userId: string (required, immutable)
+    //   - items: list (required, size < 100)
+    //   - total: number (required, >= 0)
+    //   - status: string (required, in ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // Collection: wishlists
+    // Document ID: {userId}
+    // Fields:
+    //   - userId: string (required, immutable)
+    //   - productIds: list (required, size < 500)
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.email == "windowspc998767@gmail.com" && request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser() {
+      let data = request.resource.data;
+      return hasOnlyAllowedFields(['uid', 'email', 'role', 'displayName', 'photoURL', 'createdAt']) &&
+             hasRequiredFields(['uid', 'email', 'role', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             isValidEmail(data.email) &&
+             data.role in ['admin', 'user'] &&
+             data.createdAt is timestamp &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() < 100)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() < 2000));
+    }
+
+    function isValidProduct() {
+      let data = request.resource.data;
+      return hasOnlyAllowedFields(['id', 'name', 'description', 'price', 'image', 'category', 'inventory', 'createdAt', 'updatedAt']) &&
+             hasRequiredFields(['id', 'name', 'description', 'price', 'image', 'category', 'inventory', 'createdAt']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 100 &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.description is string && data.description.size() < 2000 &&
+             data.price is number && data.price >= 0 &&
+             data.image is string && data.image.size() < 2000000 &&
+             data.category is string && data.category.size() > 0 && data.category.size() < 50 &&
+             data.inventory is number && data.inventory >= 0 &&
+             data.createdAt is timestamp &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp);
+    }
+
+    function isValidOrder() {
+      let data = request.resource.data;
+      return hasOnlyAllowedFields(['id', 'userId', 'items', 'total', 'status', 'createdAt']) &&
+             hasRequiredFields(['id', 'userId', 'items', 'total', 'status', 'createdAt']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 100 &&
+             data.userId == request.auth.uid &&
+             data.items is list && data.items.size() > 0 && data.items.size() < 100 &&
+             data.total is number && data.total >= 0 &&
+             data.status in ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidWishlist() {
+      let data = request.resource.data;
+      return hasOnlyAllowedFields(['userId', 'productIds']) &&
+             hasRequiredFields(['userId', 'productIds']) &&
+             data.userId == request.auth.uid &&
+             data.productIds is list && data.productIds.size() <= 500;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser() && (request.resource.data.role == 'user' || isAdmin());
+      allow update: if (isOwner(userId) && isValidUser() && request.resource.data.role == resource.data.role && request.resource.data.uid == resource.data.uid && request.resource.data.email == resource.data.email && request.resource.data.createdAt == resource.data.createdAt) || (isAdmin() && isValidUser() && request.resource.data.uid == resource.data.uid && request.resource.data.createdAt == resource.data.createdAt);
+      allow delete: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidProduct();
+      allow update: if isAdmin() && isValidProduct() && request.resource.data.id == resource.data.id && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidOrder() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin() && isValidOrder() && request.resource.data.id == resource.data.id && request.resource.data.userId == resource.data.userId && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    match /wishlists/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidWishlist();
+      allow update: if isOwner(userId) && isValidWishlist() && request.resource.data.userId == resource.data.userId;
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+  }
+}

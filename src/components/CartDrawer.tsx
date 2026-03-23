@@ -1,9 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { db } from '../firebase';
+import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 
 export const CartDrawer = () => {
-  const { items, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, total } = useCart();
+  const { items, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, total, clearCart } = useCart();
+  const { user } = useAuth();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  const handleCheckout = async () => {
+    if (!user) {
+      alert("Please log in to checkout.");
+      return;
+    }
+
+    if (items.length === 0) return;
+
+    setIsCheckingOut(true);
+    try {
+      const newOrderRef = doc(collection(db, 'orders'));
+      const orderData = {
+        id: newOrderRef.id,
+        userId: user.uid,
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+          category: item.category
+        })),
+        total: total,
+        status: 'pending',
+        createdAt: serverTimestamp()
+      };
+
+      await setDoc(newOrderRef, orderData);
+      clearCart();
+      setIsCartOpen(false);
+      alert("Order placed successfully!");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   if (!isCartOpen) return null;
 
@@ -113,9 +157,11 @@ export const CartDrawer = () => {
                 <p className="mt-0.5 text-sm text-gray-500 mb-6">Shipping and taxes calculated at checkout.</p>
                 <div className="mt-6">
                   <button
-                    className="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 uppercase tracking-widest transition-colors"
+                    onClick={handleCheckout}
+                    disabled={isCheckingOut}
+                    className="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Checkout
+                    {isCheckingOut ? 'Processing...' : 'Checkout'}
                   </button>
                 </div>
                 <div className="mt-6 flex justify-center text-sm text-center text-gray-500">

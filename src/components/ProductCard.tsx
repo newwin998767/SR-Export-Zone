@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import { ShoppingCart } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { ShoppingCart, Heart } from 'lucide-react';
+import { db } from '../firebase';
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 interface ProductCardProps {
   product: Product;
@@ -9,6 +12,52 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    const checkSavedStatus = async () => {
+      if (!user) return;
+      try {
+        const docRef = doc(db, 'wishlists', user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setIsSaved(data.productIds?.includes(product.id) || false);
+        }
+      } catch (error) {
+        console.error("Error checking wishlist:", error);
+      }
+    };
+    checkSavedStatus();
+  }, [user, product.id]);
+
+  const toggleSave = async () => {
+    if (!user) {
+      alert("Please log in to save items.");
+      return;
+    }
+    
+    try {
+      const docRef = doc(db, 'wishlists', user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        await setDoc(docRef, { userId: user.uid, productIds: [product.id] });
+        setIsSaved(true);
+      } else {
+        if (isSaved) {
+          await updateDoc(docRef, { productIds: arrayRemove(product.id) });
+          setIsSaved(false);
+        } else {
+          await updateDoc(docRef, { productIds: arrayUnion(product.id) });
+          setIsSaved(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating wishlist:", error);
+    }
+  };
 
   return (
     <div className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -24,6 +73,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-600 text-white uppercase tracking-wider">
             {product.category}
           </span>
+        </div>
+        <div className="absolute top-4 right-4">
+          <button
+            onClick={toggleSave}
+            className={`p-2 rounded-full shadow-sm transition-colors ${
+              isSaved ? 'bg-red-50 text-red-600' : 'bg-white text-gray-400 hover:text-red-600'
+            }`}
+          >
+            <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+          </button>
         </div>
       </div>
       <div className="p-6">
